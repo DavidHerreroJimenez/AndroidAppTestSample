@@ -13,6 +13,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import com.davidherrerojimenez.androidapptestsample.R;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,31 +28,47 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class LoginUITest {
 
+    String fakeEmailOK, fakePasswordOK, fakeEmailFail, fakePasswordFail;
+
+
     @Rule
     public ActivityTestRule<LoginActivity> loginActivityTestRule = new ActivityTestRule<LoginActivity>(LoginActivity.class);
 
-    @Test
-    public void checkIfInPutEmailEditTextFound(){
-        onView(ViewMatchers.withId(R.id.input_email)).perform(typeText("david@gmail.com"), closeSoftKeyboard(), clearText(), typeText("adios"), closeSoftKeyboard());
+    @Before
+    public void setFakeValues() throws  Exception{
+
+        fakeEmailOK = "david@gmail.com";
+        fakePasswordOK = "123456";
+        fakeEmailFail = "lelele";
+        fakePasswordFail = "1";
+
     }
 
-    @Test
-    public void checkIfInputPasswordEditTextFund(){
-        onView(withId(R.id.input_password)).perform(typeText("123456"), closeSoftKeyboard(), clearText(), typeText("1234"), closeSoftKeyboard());
-    }
 
     @Test
-    public void checkSignButton(){
+    public void testSignButton() throws  Exception{
         onView(withId(R.id.signin)).perform(click());
     }
 
     @Test
-    public void checkEmptyEmailWhenPressSignInButton(){
-        onView(withId(R.id.input_email)).perform(typeText(""), closeSoftKeyboard());
-        onView(withId(R.id.input_password)).perform(typeText("1234567"), closeSoftKeyboard());
+    public void testEmptyEmailWhenPressSignInButton() throws  Exception{
+
+        onView(withId(R.id.input_password)).perform(typeText(fakePasswordOK), closeSoftKeyboard());
         onView(withId(R.id.signin)).perform(click());
 
         onView(withText(R.string.accept_alert)).check(matches(isDisplayed()));
 
     }
+
+    @Test
+    public void testEmptyPasswordWhenPressSingInButton() throws  Exception{
+
+        onView(withId(R.id.input_email)).perform(typeText(fakeEmailOK), closeSoftKeyboard());
+
+        onView(withId(R.id.signin)).perform(click());
+
+        onView(withText(R.string.accept_alert)).check(matches(isDisplayed()));
+    }
+
+
 }
